@@ -8,6 +8,11 @@ RUN apk update && apk add \
     jq \
     make \
     gcc \
-    libc-dev
+    libc-dev \
+    bash \
+    curl
 
 RUN gem install jwt json
+
+COPY scripts/git-clone.sh /git-clone.sh
+COPY scripts/git-sync.sh /git-sync.sh
