@@ -12,6 +12,7 @@ TOKEN="${TOKEN#::set-output name=token::}"
 
 if [ -d "$DIR" ]; then
   rm -rf $DIR/*
+  rm $DIR
 fi
 git clone https://x-access-token:$TOKEN@github.com/$REPO -b $REF $DIR
 
