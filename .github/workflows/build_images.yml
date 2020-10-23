@@ -18,7 +18,7 @@ jobs:
       - name: Set image tag
         run: |
           echo ::set-env name=IMAGE_TAG::$(git log -1 --pretty=%ad --date=format:%Y-%m-%d)-$(git log --pretty=format:'%h' -n 1)
-      - name: Login Dockerhub
+      - name: Build and push image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
