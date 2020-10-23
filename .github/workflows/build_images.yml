@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ github.event.repository.name }}
+  IMAGE: navikt/knada-git-sync
 
 jobs:
   build-knada-git-sync-image:
@@ -18,10 +18,9 @@ jobs:
       - name: Set image tag
         run: |
           echo ::set-env name=IMAGE_TAG::$(git log -1 --pretty=%ad --date=format:%Y-%m-%d)-$(git log --pretty=format:'%h' -n 1)
-      - name: Build and push image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          docker build -t ${IMAGE}:${IMAGE_TAG} .
-          echo "$GITHUB_TOKEN" | docker login --username "$GITHUB_REPOSITORY" --password-stdin https://docker.pkg.github.com
-          docker push ${IMAGE}:${IMAGE_TAG}
+      - name: Login Dockerhub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build dataverk image
+        run: docker build -t ${IMAGE}:${IMAGE_TAG} .
+      - name: Push dataverk image
+        run: docker push ${IMAGE}:${IMAGE_TAG}
