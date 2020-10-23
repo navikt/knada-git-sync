@@ -1,0 +1,27 @@
+name: Build-and-push-images
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ github.event.repository.name }}
+
+jobs:
+  build-knada-git-sync-image:
+    name: Build knada git sync image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set image tag
+        run: |
+          echo ::set-env name=IMAGE_TAG::$(git log -1 --pretty=%ad --date=format:%Y-%m-%d)-$(git log --pretty=format:'%h' -n 1)
+      - name: Login Dockerhub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build -t ${IMAGE}:${IMAGE_TAG} .
+          echo "$GITHUB_TOKEN" | docker login --username "$GITHUB_REPOSITORY" --password-stdin https://docker.pkg.github.com
+          docker push ${IMAGE}:${IMAGE_TAG}
