@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: navikt/knada-git-sync
+  AIRFLOW_IAC_REPO: https://api.github.com/repos/navikt/knada-airflow/dispatches
 
 jobs:
   build-knada-git-sync-image:
@@ -24,3 +25,9 @@ jobs:
         run: docker build -t ${IMAGE} .
       - name: Push dataverk image
         run: docker push ${IMAGE}
+      - name: Notify navikt/knada-airflow of image tag update
+        run: |
+          curl -X POST "${AIRFLOW_IAC_REPO}" \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ERIK_PAT }} \
+          --data '{"event_type": "update-template-image-tag", "client_payload": { "image": "'"${IMAGE}"'", "tag": "'"${IMAGE_TAG}"'" }}'
