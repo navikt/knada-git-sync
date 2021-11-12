@@ -11,7 +11,8 @@ TOKEN=$(/bin/bash /github-app-token-generator/get-installation-access-token.sh "
 TOKEN="${TOKEN#::set-output name=token::}"
 
 if [ -d "$DIR" ]; then
-  rm -rf "$DIR"
+    rm -rf "$( find "$DIR" -mindepth 1 )"
+    rm -rf "${DIR:?}/*"
 fi
 echo "Cloning next with $REPO $REF $DIR"
 echo "git clone -v https://x-access-token:$TOKEN@github.com/$REPO $DIR"

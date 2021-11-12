@@ -11,7 +11,8 @@ TOKEN="${TOKEN#::set-output name=token::}"
 
 # ensure the git directory is empty, so we can safely clone
 if [ -d "$DIR" ]; then
-  rm -rf "$DIR"
+    rm -rf "$( find "$DIR" -mindepth 1 )"
+    rm -rf "${DIR:?}/*"
 fi
 
 git clone "https://x-access-token:$TOKEN@github.com/$REPO" -b "$REF" "$DIR"
