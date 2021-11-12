@@ -12,7 +12,7 @@ TOKEN=$(/bin/bash /github-app-token-generator/get-installation-access-token.sh "
 TOKEN="${TOKEN#::set-output name=token::}"
 
 # if .git exists, we already have cloned the repo (see git-clone)
-if [ n -d "$DIR/.git" ]; then
+if [ ! -d "$DIR/.git" ]; then
     git clone -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
 fi
 
