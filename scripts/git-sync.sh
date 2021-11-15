@@ -14,6 +14,8 @@ TOKEN="${TOKEN#::set-output name=token::}"
 # if .git exists, we already have cloned the repo (see git-clone)
 if [ ! -d "$DIR/.git" ]; then
     git clone -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
+else
+    git remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
 fi
 
 # to break the infinite loop when we receive SIGTERM
@@ -21,7 +23,6 @@ trap "exit 0" TERM
 
 cd "$DIR"
 while true; do
-  git remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
   git fetch origin "$REF";
   git reset --hard "origin/$REF";
   git clean -fd;
