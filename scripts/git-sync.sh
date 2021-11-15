@@ -21,6 +21,7 @@ trap "exit 0" TERM
 
 cd "$DIR"
 while true; do
+  git remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
   git fetch origin "$REF";
   git reset --hard "origin/$REF";
   git clean -fd;
