@@ -15,7 +15,7 @@ TOKEN="${TOKEN#::set-output name=token::}"
 if [ ! -d "$DIR/.git" ]; then
     git clone -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
 else
-    git remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
+    git --git-dir "$DIR/.git" remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
 fi
 
 # to break the infinite loop when we receive SIGTERM
