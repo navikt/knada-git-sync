@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -e
 
 REPO=$1
@@ -8,24 +9,33 @@ SYNC_TIME=$4
 
 export GITHUB_REPOSITORY="${REPO}"
 
-TOKEN=$(/bin/bash /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)") && \
-TOKEN="${TOKEN#::set-output name=token::}"
+get_token() {
+  echo "Fetch new token"
+  TOKEN=$(/bin/bash /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)") && \
+  TOKEN="${TOKEN#::set-output name=token::}"
 
-# if .git exists, we already have cloned the repo (see git-clone)
-if [ ! -d "$DIR/.git" ]; then
-    git clone -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
-else
-    git --git-dir "$DIR/.git" remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
-fi
+  # if .git exists, we already have cloned the repo (see git-clone)
+  if [ ! -d "$DIR/.git" ]; then
+      git clone -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
+  else
+      git --git-dir "$DIR/.git" remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
+  fi
+}
 
-# to break the infinite loop when we receive SIGTERM
-trap "exit 0" TERM
-
-cd "$DIR"
-while true; do
+git_pull() {
+  echo "Pulling remote"
   git fetch origin "$REF";
   git reset --hard "origin/$REF";
   git clean -fd;
   date;
+}
+
+# to break the infinite loop when we receive SIGTERM
+trap "exit 0" TERM
+
+get_token
+cd "$DIR"
+while true; do
+  git_pull || get_token
   sleep "$SYNC_TIME";
 done
