@@ -11,3 +11,5 @@ TOKEN=$(/bin/bash /github-app-token-generator/get-installation-access-token.sh "
 TOKEN="${TOKEN#::set-output name=token::}"
 
 git clone "https://x-access-token:$TOKEN@github.com/$REPO" -b "$REF" "$DIR"
+
+sleep 2
