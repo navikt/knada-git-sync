@@ -17,4 +17,6 @@ RUN gem install jwt json
 COPY scripts/git-clone.sh /git-clone.sh
 COPY scripts/git-sync.sh /git-sync.sh
 
+RUN git config --global --add safe.directory /dags
+
 RUN chmod +x /git-clone.sh /git-sync.sh
