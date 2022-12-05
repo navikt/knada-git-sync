@@ -33,6 +33,7 @@ git_pull() {
 trap "exit 0" TERM
 
 cd "$DIR"
+git config --global --add safe.directory /dags
 while true; do
   git_pull || get_token
   date
