@@ -1,5 +1,7 @@
 FROM alpine/git:latest
 
+ENV AIRFLOW_USER 50000
+
 RUN git clone https://github.com/navikt/github-app-token-generator.git /github-app-token-generator
 
 RUN apk update && apk add \
@@ -17,6 +19,8 @@ RUN gem install jwt json
 COPY scripts/git-clone.sh /git-clone.sh
 COPY scripts/git-sync.sh /git-sync.sh
 
-RUN git config --global --add safe.directory /dags
-
 RUN chmod +x /git-clone.sh /git-sync.sh
+
+RUN adduser -u ${AIRFLOW_USER} airflow -D
+
+USER ${AIRFLOW_USER}
