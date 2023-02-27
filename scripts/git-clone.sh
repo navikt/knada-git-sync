@@ -7,8 +7,14 @@ DIR=$3
 
 export GITHUB_REPOSITORY="${REPO}"
 
-TOKEN=$(/bin/bash /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)") && \
-TOKEN="${TOKEN#::set-output name=token::}"
+# get-installation-access-token.sh stores the fetched access token in a file referenced by the env GITHUB_OUTPUT
+# so we must create this file
+touch ./token
+export GITHUB_OUTPUT=./token
+
+/github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)"
+TOKEN=$(tail -1 ./token)
+TOKEN=${TOKEN#"token="}
 
 git clone "https://x-access-token:$TOKEN@github.com/$REPO" -b "$REF" "$DIR"
 
