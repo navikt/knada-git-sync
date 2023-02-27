@@ -6,28 +6,34 @@ on:
       - master
 
 env:
-  IMAGE: navikt/knada-git-sync
-  AIRFLOW_IAC_REPO: https://api.github.com/repos/navikt/knada-airflow/dispatches
+  IMAGE: europe-west1-docker.pkg.dev/knada-gcp/airflow/knada-git-sync
 
 jobs:
   build-knada-git-sync-image:
     name: Build knada git sync image
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: write
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
+      - uses: actions/checkout@v3
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/193123067890/locations/global/workloadIdentityPools/ci-knada-images/providers/ci-knada-images
+          service_account: ci-knada-images@knada-gcp.iam.gserviceaccount.com
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v1
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
       - name: Set image tag
-        run: |
-          echo "IMAGE_TAG=$(git log -1 --pretty=%ad --date=format:%Y-%m-%d)-$(git log --pretty=format:'%h' -n 1)" >> $GITHUB_ENV
-      - name: Login Dockerhub
-        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "IMAGE_TAG=$(git log -1 --pretty=%ad --date=format:%Y-%m-%d)-$(git log --pretty=format:'%h' -n 1)" >> $GITHUB_ENV
       - name: Build dataverk image
         run: docker build -t ${IMAGE}:${IMAGE_TAG} .
       - name: Push dataverk image
         run: docker push ${IMAGE}:${IMAGE_TAG}
-      - name: Notify navikt/knada-airflow of image tag update
-        run: |
-          curl -X POST "${AIRFLOW_IAC_REPO}" \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.ERIK_PAT }} \
-          --data '{"event_type": "update-template-image-tag", "client_payload": { "image": "'"${IMAGE}"'", "tag": "'"${IMAGE_TAG}"'" }}'
