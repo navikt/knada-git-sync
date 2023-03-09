@@ -22,7 +22,7 @@ get_token() {
 
   # if .git exists, we already have cloned the repo (see git-clone)
   if [ ! -d "$DIR/.git" ]; then
-      git clone -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
+      git clone --quiet -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
   else
       git config --global --add safe.directory /dags
       git --git-dir "$DIR/.git" remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
