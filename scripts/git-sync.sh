@@ -31,7 +31,7 @@ get_token() {
 
 git_pull() {
   git fetch --quiet origin "$REF" && \
-  git reset "origin/$REF" && \
+  git reset --hard "origin/$REF" && \
   git clean --quiet -fd
 }
 
