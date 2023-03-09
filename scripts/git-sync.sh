@@ -31,9 +31,9 @@ get_token() {
 
 git_pull() {
   echo "Pulling remote"
-  git fetch origin "$REF" && \
-  git reset --hard "origin/$REF" && \
-  git clean -fd
+  git fetch --quiet origin "$REF" && \
+  git reset --quiet --hard "origin/$REF" && \
+  git clean --quiet -fd
 }
 
 # to break the infinite loop when we receive SIGTERM
