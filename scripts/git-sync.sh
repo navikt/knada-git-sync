@@ -30,9 +30,8 @@ get_token() {
 }
 
 git_pull() {
-  echo "Pulling remote"
   git fetch --quiet origin "$REF" && \
-  git reset --quiet --hard "origin/$REF" && \
+  git reset "origin/$REF" && \
   git clean --quiet -fd
 }
 
@@ -41,7 +40,7 @@ trap "exit 0" TERM
 
 cd "$DIR"
 while true; do
-  git_pull || get_token
   date
+  git_pull || get_token
   sleep "$SYNC_TIME"
 done
