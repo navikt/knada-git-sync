@@ -2,10 +2,19 @@
 
 set -e
 
-REPO=$1
-REF=$2
-DIR=$3
-SYNC_TIME=$4
+ARGLEN=$#
+if [ $ARGLEN -lt 3 ]
+then
+    REPO=$DAG_REPO
+    REF=$DAG_REPO_BRANCH
+    DIR=$DAG_REPO_DIR
+    SYNC_TIME=$SYNC_TIME
+else
+    REPO=$1
+    REF=$2
+    DIR=$3
+    SYNC_TIME=$4
+fi
 
 export GITHUB_REPOSITORY="${REPO}"
 
