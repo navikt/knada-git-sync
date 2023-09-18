@@ -16,6 +16,7 @@ RUN apk update && apk add \
 
 RUN gem install jwt json
 
+COPY scripts/entrypoint.sh /entrypoint.sh
 COPY scripts/git-clone.sh /git-clone.sh
 COPY scripts/git-sync.sh /git-sync.sh
 
@@ -24,3 +25,5 @@ RUN chmod +x /git-clone.sh /git-sync.sh
 RUN adduser -u ${AIRFLOW_USER} airflow -D
 
 USER ${AIRFLOW_USER}
+
+ENTRYPOINT [ "/bin/sh", "/entrypoint.sh" ]
