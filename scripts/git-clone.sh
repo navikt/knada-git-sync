@@ -6,7 +6,7 @@ if [ $ARGLEN -lt 3 ]
 then
     REPO=$GIT_SYNC_REPO
     REF=$GIT_SYNC_BRANCH
-    DIR=$DAG_REPO_DIR
+    DIR=$GIT_SYNC_ROOT
 else
     REPO=$1
     REF=$2
