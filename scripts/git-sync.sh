@@ -7,7 +7,7 @@ if [ $ARGLEN -lt 3 ]
 then
     REPO=$GIT_SYNC_REPO
     REF=$GIT_SYNC_BRANCH
-    DIR=$GIT_SYNC_ROOT
+    DIR=$DAG_REPO_DIR
     SYNC_TIME=$GIT_SYNC_WAIT
 else
     REPO=$1
@@ -33,7 +33,7 @@ get_token() {
   if [ ! -d "$DIR/.git" ]; then
       git clone --quiet -v "https://x-access-token:$TOKEN@github.com/$REPO" "$DIR"
   else
-      git config --global --add safe.directory /git
+      git config --global --add safe.directory $DIR
       git --git-dir "$DIR/.git" remote set-url origin "https://x-access-token:$TOKEN@github.com/$REPO"
   fi
 }
