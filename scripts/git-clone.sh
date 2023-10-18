@@ -24,6 +24,9 @@ export GITHUB_OUTPUT=/tmp/token
 TOKEN=$(tail -1 /tmp/token)
 TOKEN=${TOKEN#"token="}
 
-git clone --quiet "https://x-access-token:$TOKEN@github.com/$REPO" -b "$REF" "$DIR"
+for i in {1..3}
+do 
+    git clone --quiet "https://x-access-token:$TOKEN@github.com/$REPO" -b "$REF" "$DIR" && break || echo "retrying in 5 seconds..."; sleep 5
+done
 
 sleep 2
