@@ -35,7 +35,7 @@ fi
 
 for i in {1..3}
 do 
-    git clone --quiet "https://$CREDS@github.com/$REPO" -b "$REF" "$DIR" && break || echo "retrying in 5 seconds..."; sleep 5
+    git clone --depth=1 --quiet "https://$CREDS@github.com/$REPO" -b "$REF" "$DIR" && break || echo "retrying in 5 seconds..."; sleep 5
 done
 
 sleep 2
