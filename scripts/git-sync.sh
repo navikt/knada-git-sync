@@ -25,7 +25,7 @@ export GITHUB_OUTPUT=/tmp/token
 
 get_token() {
   echo "Fetch token"
-  /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)"
+  /github-app-token-generator/get-installation-access-token.sh "$(cat /var/run/secrets/github/PRIVATE_KEY)" "$(cat /var/run/secrets/github/APP_ID)"
   TOKEN=$(tail -1 /tmp/token)
   TOKEN=${TOKEN#"token="}
 

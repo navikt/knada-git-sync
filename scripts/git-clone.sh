@@ -24,7 +24,7 @@ then
 
     for i in {1..3}
     do
-        /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)" && break || echo "retrying fetching access token in 5 seconds..."; sleep 5
+        /github-app-token-generator/get-installation-access-token.sh "$(cat /var/run/secrets/github/PRIVATE_KEY)" "$(cat /var/run/secrets/github/APP_ID)" && break || echo "retrying fetching access token in 5 seconds..."; sleep 5
     done
     TOKEN=$(tail -1 /tmp/token)
     TOKEN=${TOKEN#"token="}
