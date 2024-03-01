@@ -54,8 +54,6 @@ jobs:
         with:
           # Only push to the registry on a push to main
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          # Only load the docker image on a pull request
-          load: ${{ github.event_name == 'pull_request' }}
           platforms: linux/amd64,linux/arm64
           tags: | 
             europe-north1-docker.pkg.dev/knada-gcp/knada-north/${{ env.IMAGE }}:${{ env.TAG }}
