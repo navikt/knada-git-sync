@@ -36,7 +36,7 @@ then
         fi
     done
 
-    if [ $attempt_num -gt $GH_API_MAX_RETRIES ];
+    if [ $attempt_num -ge $GH_API_MAX_RETRIES ];
     then
         echo "failed to aquire github access token after $GH_API_MAX_RETRIES retries"
         exit 1
@@ -61,7 +61,7 @@ do
     fi
 done
 
-if [ $attempt_num -gt $GH_API_MAX_RETRIES ];
+if [ $attempt_num -ge $GH_API_MAX_RETRIES ];
 then
     echo "error cloning branch $REF of repo $REPO, giving up after $GH_API_MAX_RETRIES retries"
     exit 1

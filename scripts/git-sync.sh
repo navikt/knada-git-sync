@@ -55,7 +55,7 @@ while true; do
   status_code=$?
   if [ $status_code -eq $GH_API_AUTH_ERROR_STATUS_CODE ]; then
     get_token
-  elif [ $status_code != $GH_API_OK_STATUS_CODE ]; then
+  elif [ $status_code -ne $GH_API_OK_STATUS_CODE ]; then
     cat /tmp/errors
     exit $status_code
   fi
