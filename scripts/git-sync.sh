@@ -55,7 +55,9 @@ while true; do
   if [ $? -eq $GH_API_AUTH_ERROR_STATUS_CODE ]; then
     get_token
   elif [ $? -ne $GH_API_OK_STATUS_CODE ]; then
+    error_status_code=$?
     cat /tmp/errors
+    exit $error_status_code
   fi
   sleep "$SYNC_TIME"
 done
