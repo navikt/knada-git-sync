@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 GH_API_AUTH_ERROR_STATUS_CODE=128
 GH_API_OK_STATUS_CODE=0
@@ -52,12 +52,12 @@ cd "$DIR"
 while true; do
   date
   git_pull 2>/tmp/errors
-  if [ $? -eq $GH_API_AUTH_ERROR_STATUS_CODE ]; then
+  status_code=$?
+  if [ $status_code -eq $GH_API_AUTH_ERROR_STATUS_CODE ]; then
     get_token
-  elif [ $? -ne $GH_API_OK_STATUS_CODE ]; then
-    error_status_code=$?
+  elif [ $status_code != $GH_API_OK_STATUS_CODE ]; then
     cat /tmp/errors
-    exit $error_status_code
+    exit $status_code
   fi
   sleep "$SYNC_TIME"
 done
