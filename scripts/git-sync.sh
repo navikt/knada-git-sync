@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
+GH_API_AUTH_ERROR_STATUS_CODE=128
+GH_API_OK_STATUS_CODE=0
 
 ARGLEN=$#
 if [ $ARGLEN -lt 3 ]
@@ -24,7 +25,7 @@ touch /tmp/token
 export GITHUB_OUTPUT=/tmp/token
 
 get_token() {
-  echo "Fetch token"
+  echo "Fetching new token"
   /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)"
   TOKEN=$(tail -1 /tmp/token)
   TOKEN=${TOKEN#"token="}
@@ -50,6 +51,11 @@ trap "exit 0" TERM
 cd "$DIR"
 while true; do
   date
-  git_pull || get_token
+  git_pull 2>/tmp/errors
+  if [ $? -eq $GH_API_AUTH_ERROR_STATUS_CODE ]; then
+    get_token
+  elif [ $? -ne $GH_API_OK_STATUS_CODE ]; then
+    cat /tmp/errors
+  fi
   sleep "$SYNC_TIME"
 done
