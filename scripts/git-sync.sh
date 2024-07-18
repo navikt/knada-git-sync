@@ -58,6 +58,7 @@ while true; do
   elif [ $status_code -ne $GH_API_OK_STATUS_CODE ]; then
     cat /tmp/errors
     exit $status_code
+  else
+    sleep "$SYNC_TIME"
   fi
-  sleep "$SYNC_TIME"
 done
