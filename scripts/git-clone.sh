@@ -26,19 +26,19 @@ then
     attempt_num=1
     while [ $attempt_num -le $GH_API_MAX_RETRIES ];
     do
-        /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)"
+        /github-app-token-generator/get-installation-access-token.sh "$(cat /keys/PRIVATE_KEY)" "$(cat /keys/APP_ID)" 2>&1
         if [ $? -eq 0 ]; then
           break
         else
           attempt_num=$(( attempt_num + 1 ))
-          echo "retrying fetching access token in 5 seconds"
+          echo "Retrying fetching access token in 5 seconds"
           sleep 5
         fi
     done
 
     if [ $attempt_num -ge $GH_API_MAX_RETRIES ];
     then
-        echo "failed to aquire github access token after $GH_API_MAX_RETRIES retries"
+        echo "Failed to aquire github access token for repo $REPO after $GH_API_MAX_RETRIES retries" 1>&2
         exit 1
     fi
     TOKEN=$(tail -1 /tmp/token)
@@ -51,19 +51,19 @@ fi
 attempt_num=1
 while [ $attempt_num -le $GH_API_MAX_RETRIES ];
 do
-    git clone --depth=1 --quiet "https://$CREDS@github.com/$REPO" -b "$REF" "$DIR"
+    git clone --depth=1 --quiet "https://$CREDS@github.com/$REPO" -b "$REF" "$DIR" 2>&1
     if [ $? -eq 0 ]; then
         break
     else 
         attempt_num=$(( attempt_num + 1 ))
-        echo "cloning of repository failed, retrying in 5 seconds..."
+        echo "Cloning branch $REF of repo $REPO failed, retrying in 5 seconds..."
         sleep 5
     fi
 done
 
 if [ $attempt_num -ge $GH_API_MAX_RETRIES ];
 then
-    echo "error cloning branch $REF of repo $REPO, giving up after $GH_API_MAX_RETRIES retries"
+    echo "Error cloning branch $REF of repo $REPO, giving up after $GH_API_MAX_RETRIES retries" 1>&2
     exit 1
 fi
 
