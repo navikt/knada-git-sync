@@ -1,4 +1,4 @@
-FROM alpine/git:v2.49.1
+FROM alpine/git:v2.54.0
 
 ENV AIRFLOW_USER 50000
 
